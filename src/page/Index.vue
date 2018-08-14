@@ -14,6 +14,7 @@
             <img src="../assets/imgs/temp2.png" @click="changeIndex(1)" :class="{'select-img':curIndex==1}">
             <img src="../assets/imgs/temp3.png" @click="changeIndex(2)" :class="{'select-img':curIndex==2}">
         </div>
+        <div class="composite-btn" @click="createPhoto">合成图片</div>
     </div>
 </template>
 <script>
@@ -31,7 +32,9 @@
                 initTouchY: 0,
                 changeTouchX: 0,
                 changeTouchY: 0,
-                reviewImgDom: ''
+                reviewImgDom: '',
+                lastTouchX: 0,
+                lastTouchY: 0
             }
         },
         mounted () {
@@ -64,13 +67,16 @@
                     var touches = e.touches[0]
                     this.changeTouchX = touches.clientX - this.initTouchX
                     this.changeTouchY = touches.clientY - this.initTouchY
-                    this.reviewImgDom.style.left = this.reviewImgDom.offsetLeft + this.changeTouchX + 'px'
-                    this.reviewImgDom.style.top = this.reviewImgDom.offsetTop + this.changeTouchY + 'px'
-                } 
+                    this.reviewImgDom.style.left = this.lastTouchX + this.changeTouchX + 'px'
+                    this.reviewImgDom.style.top = this.lastTouchY + this.changeTouchY + 'px'
+                }
             },
             getLeavePosition (e) {
-                this.initTouchX += this.changeTouchX
-                this.initTouchY += this.changeTouchY
+                this.lastTouchX = this.reviewImgDom.offsetLeft
+                this.lastTouchY = this.reviewImgDom.offsetTop
+            },
+            createPhoto () {
+                
             }
         }
     }
@@ -152,6 +158,20 @@
                     border: 2px solid #ff5b2f;
                     box-shadow: 0px 4px 10px 0 rgba(250, 82, 82, 0.7);
                 }
+            }
+            .composite-btn {
+                display: block;
+                font-size: 0.36rem;
+                width: 5.26rem;
+                height: 0.92rem;
+                background: #2f96ff;
+                line-height: 0.92rem;
+                color: #fff;
+                margin: 0.5rem auto;
+                text-align: center;
+                border-radius: 10px;
+                font-weight: normal;
+                box-shadow: 0rem 0.1rem 0 0.001rem #448adf;
             }
         }
         
