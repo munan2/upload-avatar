@@ -43,7 +43,8 @@
                             x: 0,
                             y: 0
                         },
-                        scale: 1
+                        scale: 1,
+                        lastScale: 1
                     }
                 }
             },
@@ -78,6 +79,9 @@
                         reads.readAsDataURL(this.files[0])
                         reads.addEventListener('load', function (e) {
                             that.imgUrl = this.result
+                            that.myImg.position.x = 0
+                            that.myImg.position.y = 0
+                            that.myImg.scale = 1
                             var orientation
                             that.previewImg.addEventListener('load', function () {
                                 Exif.getData(that.previewImg, function() { // 获取图像的数据
@@ -153,19 +157,28 @@
                             let pointTwo = e.touches[1]
                             this.changeTouchX = pointOne.clientX - pointTwo.clientX
                             this.changeTouchY = pointOne.clientY - pointTwo.clientY
-                            this.myImg.scale = (this.changeTouchX - this.initTouchX) > (this.changeTouchY - this.initTouchY) ? (this.changeTouchX / this.initTouchX) : (this.changeTouchY / this.initTouchY)
+                            var scale = (this.changeTouchX - this.initTouchX) > (this.changeTouchY - this.initTouchY) ? (this.changeTouchX / this.initTouchX) : (this.changeTouchY / this.initTouchY) 
+                            scale *= this.myImg.lastScale
+                            this.myImg.scale = scale > 3 ? 3 : scale < 0.2 ? 0.2 : scale
                         } else {
                             var touches = e.touches[0]
                             this.changeTouchX = touches.clientX - this.initTouchX
                             this.changeTouchY = touches.clientY - this.initTouchY
-                            this.myImg.position.x = this.lastTouchX + this.changeTouchX
-                            this.myImg.position.y = this.lastTouchY + this.changeTouchY
+                            this.myImg.position.x = (this.lastTouchX + this.changeTouchX) / this.myImg.scale
+                            this.myImg.position.y = (this.lastTouchY + this.changeTouchY) / this.myImg.scale
                         }   
                     }
                 },
                 getLeavePosition (e) {
-                    this.lastTouchX = this.lastTouchX + this.changeTouchX
-                    this.lastTouchY = this.lastTouchY + this.changeTouchY
+                    this.myImg.lastScale = this.myImg.scale
+                    if (e.touches.length > 0) {
+                        var touches = e.touches[0]
+                        this.initTouchX = touches.clientX
+                        this.initTouchY = touches.clientY
+                    } else {
+                        this.lastTouchX = this.lastTouchX + this.changeTouchX
+                        this.lastTouchY = this.lastTouchY + this.changeTouchY
+                    }
                 },
                 createPhoto () {
                     if (this.imgUrl) {
