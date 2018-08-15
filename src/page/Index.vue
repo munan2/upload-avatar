@@ -18,6 +18,7 @@
     </div>
 </template>
 <script>
+    import html2canvas from 'html2canvas'
     export default {
         data () {
             return {
@@ -41,6 +42,12 @@
             this.reviewImgDom = document.querySelector('#preview-img')
         },
         methods: {
+            defaultSwipe () {
+                document.addEventListener('touchstart', function () {
+                    let winHeight = document.innerHeight;
+
+                })
+            },
             getPhoto () {
                 var imageInput = document.querySelector('#image-input')
                 var that = this
@@ -67,28 +74,46 @@
                     var touches = e.touches[0]
                     this.changeTouchX = touches.clientX - this.initTouchX
                     this.changeTouchY = touches.clientY - this.initTouchY
-                    this.reviewImgDom.style.left = this.lastTouchX + this.changeTouchX + 'px'
-                    this.reviewImgDom.style.top = this.lastTouchY + this.changeTouchY + 'px'
+                    this.reviewImgDom.style.transform = 'translate3d(' + (this.lastTouchX + this.changeTouchX) + 'px, ' + (this.lastTouchY + this.changeTouchY) + 'px, 0)'
                 }
             },
             getLeavePosition (e) {
-                this.lastTouchX = this.reviewImgDom.offsetLeft
-                this.lastTouchY = this.reviewImgDom.offsetTop
+                this.lastTouchX = this.lastTouchX + this.changeTouchX
+                this.lastTouchY = this.lastTouchY + this.changeTouchY
             },
             createPhoto () {
-                
+                let photoBox = document.querySelector('.photo-box')
+                let newImgWidth = photoBox.style.offsetWidth
+                let newImgHeight = photoBox.style.offsetHeight
+                let scale = window.devicePixelRatio
+                let that = this
+                html2canvas(photoBox, {
+                    width: newImgWidth,
+                    height: newImgHeight,
+                    scale: scale,
+                    useCORS: true
+                }).then(function (canvas) { 
+                    var dataUrl = canvas.toDataURL('image/jpg')
+					localStorage.imgData = dataUrl
+					that.$router.push({
+						name: 'share',
+						params: {
+							storage: 'imgData'
+						}
+					})
+                })
             }
         }
     }
 </script>
 <style lang="less">
     @import '../assets/css/reset.css';
-    body {
-        width: 100vw;
-        min-height: 100vh;
-        background: url(../assets/imgs/bg.png) no-repeat;
+    #app {
         .index-container {
-            margin-top: 1rem;
+            padding-top: 0.6rem;
+            box-sizing: border-box;
+            min-height: 100vh;
+            background: url(../assets/imgs/bg.png) no-repeat;
             .upload-btn {
                 display: block;
                 font-size: 0.36rem;
@@ -125,7 +150,7 @@
                 }
             }
             .photo-box {
-                margin: 0.5rem auto;
+                margin: 0.4rem auto 0.2rem auto;
                 width: 6.4rem;
                 height: 6rem;
                 background: #fff;
@@ -140,6 +165,10 @@
                 .preview-box {
                     position: absolute;
                     z-index: 9;
+                    left: 0;
+                    top: 0;
+                    width: 100%;
+                    height: 100%;
                 }
             }
             .photo-ul {
@@ -164,14 +193,14 @@
                 font-size: 0.36rem;
                 width: 5.26rem;
                 height: 0.92rem;
-                background: #2f96ff;
+                background:rgba(243, 111, 84, 0.881);
                 line-height: 0.92rem;
                 color: #fff;
-                margin: 0.5rem auto;
+                margin: 0.2rem auto;
                 text-align: center;
                 border-radius: 10px;
                 font-weight: normal;
-                box-shadow: 0rem 0.1rem 0 0.001rem #448adf;
+                box-shadow: 0rem 0.1rem 0 0.001rem #e0836a;
             }
         }
         
