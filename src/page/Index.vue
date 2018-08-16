@@ -65,12 +65,6 @@
                 },false) 
             },
             methods: {
-                defaultSwipe () {
-                    document.addEventListener('touchstart', function () {
-                        let winHeight = document.innerHeight;
-    
-                    })
-                },
                 getPhoto () {
                     var imageInput = document.querySelector('#image-input')
                     var that = this
