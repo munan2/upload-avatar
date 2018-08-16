@@ -3,13 +3,7 @@
 import Vue from 'vue'
 import App from './App'
 import router from './router'
-import Exif from 'exif-js'
-import axios from '../utils/axios.js'
-import {post, get} from '../utils/http.js'
 Vue.config.productionTip = false
-Vue.prototype.$axios = axios
-Vue.prototype.$post = post
-Vue.prototype.$get = get
 // require('./mock.js')
 /* eslint-disable no-new */
 new Vue({
