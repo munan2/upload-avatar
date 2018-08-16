@@ -1,6 +1,7 @@
 <template>
     <div class="share-box">
         <img :src="shareImgUrl" alt="">
+        <span>长按图片保存</span>
     </div>
 </template>
 <script>
